@@ -63,8 +63,11 @@ def compute():
     A.	Call the make_blobs function with following parameters :(center_box=(-20,20), n_samples=20, centers=5, random_state=12).
     """
     b =  make_blobs(center_box=(-20,20), n_samples=20, centers=5, random_state=12)
+    X = b[0][:,0]
+    Y = b[0][:,1]
+    label =  b[1]
     # dct: return value from the make_blobs function in sklearn, expressed as a list of three numpy arrays
-    dct = answers["2A: blob"] = [np.zeros(0)]
+    dct = answers["2A: blob"] = X,Y, label
 
     """
     B. Modify the fit_kmeans function to return the SSE (see Equations 8.1 and 8.2 in the book).
