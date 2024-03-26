@@ -67,8 +67,7 @@ def compute():
     Y = b[0][:,1]
     label =  b[1]
     # dct: return value from the make_blobs function in sklearn, expressed as a list of three numpy arrays
-    dct = answers["2A: blob"] = X,Y, label
-
+    dct = answers["2A: blob"] = [X.tolist(), Y.tolist(), label.tolist()]
     """
     B. Modify the fit_kmeans function to return the SSE (see Equations 8.1 and 8.2 in the book).
     """
