@@ -2,8 +2,8 @@ import time
 import warnings
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import cluster, datasets, mixture
-from sklearn.datasets import make_blobs
+from sklearn import cluster, mixture
+from sklearn.datasets import *
 from sklearn.neighbors import kneighbors_graph
 from sklearn.preprocessing import StandardScaler
 from itertools import cycle, islice
@@ -44,12 +44,12 @@ def compute():
     """
     A.	Repeat parts 1.A and 1.B with hierarchical clustering. That is, write a function called fit_hierarchical_cluster (or something similar) that takes the dataset, the linkage type and the number of clusters, that trains an AgglomerativeClustering sklearn estimator and returns the label predictions. Apply the same standardization as in part 1.B. Use the default distance metric (euclidean) and the default linkage (ward).
     """
-    nc = datasets.make_circles(n_samples=100, factor=0.5, noise=0.05, random_state=42)
-    nm = datasets.make_moons(n_samples=100, noise=0.05, random_state=42)
-    b = datasets.make_blobs(n_samples=100, random_state=42)
-    bvv = datasets.make_blobs(n_samples=100, cluster_std=[1.0, 2.5, 0.5], random_state=42)
+    nc = make_circles(n_samples=100, factor=0.5, noise=0.05, random_state=42)
+    nm = make_moons(n_samples=100, noise=0.05, random_state=42)
+    b = make_blobs(n_samples=100, random_state=42)
+    bvv = make_blobs(n_samples=100, cluster_std=[1.0, 2.5, 0.5], random_state=42)
     #Anisotropicly distributed data
-    X, y = datasets.make_blobs(n_samples=100, random_state=42)
+    X, y = make_blobs(n_samples=100, random_state=42)
     transformation = [[0.6, -0.6], [-0.4, 0.8]]
     X_aniso = np.dot(X, transformation)
     add = (X_aniso, y)
@@ -60,7 +60,7 @@ def compute():
     "nm": [nm[0], nm[1]],
     "bvv": [bvv[0], bvv[1]],
     "add": [add[0], add[1]],
-    "b": [b[0], b[1]]}
+    "b": [b[0], b[1]],}
 
     # dct value:  the `fit_hierarchical_cluster` function
     dct = answers["4A: fit_hierarchical_cluster"] = fit_hierarchical_cluster
