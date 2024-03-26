@@ -159,13 +159,13 @@ def compute():
     plot_all_linkage_clusters(datasets, auto_cutoff_predictions, linkage_types, 'Hierarchical Clustering')
 
 
+
     def fit_modified(data, method):
         scaler = StandardScaler()
         data_scaled = scaler.fit_transform(data[0])
         Z = scipy_linkage(data_scaled, method=method)
-    # Find the optimal cutoff distance
         cutoff = find_optimal_cutoff(Z)
-        predicted_labels = fcluster(Z, cutoff, criterion='distance') - 1  # Adjust labels to start from 0
+        predicted_labels = fcluster(Z, cutoff, criterion='distance') - 1
         return predicted_labels
     
     # dct is the function described above in 4.C
