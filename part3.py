@@ -8,6 +8,7 @@ from sklearn.neighbors import kneighbors_graph
 from sklearn.preprocessing import StandardScaler
 from itertools import cycle, islice
 import scipy.io as io
+from scipy.io import loadmat
 from scipy.cluster.hierarchy import dendrogram, linkage  #
 
 # import plotly.figure_factory as ff
@@ -27,7 +28,19 @@ Recall from lecture that agglomerative hierarchical clustering is a greedy itera
 # the question asked.
 
 
-def data_index_function():
+def data_index_function(data, set_I, set_J):
+    min_dist = np.inf  # Start with infinity as the minimum distance
+    
+    # Iterate over all pairs of points, one from set I and one from set J
+    for i in set_I:
+        for j in set_J:
+            # Calculate the Euclidean distance between points i and j
+            dist = np.linalg.norm(data[i] - data[j])
+            # Update the minimum distance if this distance is smaller
+            if dist < min_dist:
+                min_dist = dist
+    
+    return min_dist
     return None
 
 
@@ -37,30 +50,82 @@ def compute():
     """
     A.	Load the provided dataset “hierachal_toy_data.mat” using the scipy.io.loadmat function.
     """
-
+    data = loadmat("hierarchical_toy_data.mat")
     # return value of scipy.io.loadmat()
-    answers["3A: toy data"] = {}
+    answers["3A: toy data"] = data
 
     """
     B.	Create a linkage matrix Z, and plot a dendrogram using the scipy.hierarchy.linkage and scipy.hierachy.dendrogram functions, with “single” linkage.
     """
+    d = data['X']
+    Z = linkage(d, method='single')
+    plt.figure(figsize=(10, 5))
+    dendrogram(Z)
+    plt.title('Dendrogram with Single Linkage')
+    plt.xlabel('Data Points')
+    plt.ylabel('Distance')
+    plt.show()
 
     # Answer: NDArray
     answers["3B: linkage"] = np.zeros(1)
 
     # Answer: the return value of the dendogram function, dicitonary
-    answers["3B: dendogram"] = {}
+    answers["3B: dendogram"] = dendrogram(Z)
+
 
     """
     C.	Consider the merger of the cluster corresponding to points with index sets {I={8,2,13}} J={1,9}}. At what iteration (starting from 0) were these clusters merged? That is, what row does the merger of A correspond to in the linkage matrix Z? The rows count from 0. 
     """
+    d = data['X']
+    Z = linkage(d, method='single')
+    set_1 = {8, 2, 13}
+    set_2 = {1, 9}
 
+    n = len(d)  # Number of initial data points
+
+    # Track which cluster each point belongs to at each step
+    point_cluster = {i: {i} for i in range(n)}
+
+    # Iterate over the linkage matrix to see when the clusters merge
+    for i, row in enumerate(Z):
+        cluster_1, cluster_2 = int(row[0]), int(row[1])
+
+        # Get the actual point sets for the clusters
+        points_1 = point_cluster[cluster_1] if cluster_1 in point_cluster else set()
+        points_2 = point_cluster[cluster_2] if cluster_2 in point_cluster else set()
+
+        # Update the point clusters to reflect the merger
+        new_cluster = points_1.union(points_2)
+        for point in new_cluster:
+            point_cluster[point] = new_cluster
+
+        # Assign the new cluster to the higher index representing the merged cluster
+            point_cluster[n + i] = new_cluster
+
+        # Check if all points from set_1 and set_2 are now in the same cluster
+            if set_1.issubset(new_cluster) and set_2.issubset(new_cluster):
+                print(f"Clusters containing points {set_1} and {set_2} merged at iteration {i}.")
+                break
     # Answer type: integer
-    answers["3C: iteration"] = -1
+    answers["3C: iteration"] = 4
 
     """
     D.	Write a function that takes the data and the two index sets {I,J} above, and returns the dissimilarity given by single link clustering using the Euclidian distance metric. The function should output the same value as the 3rd column of the row found in problem 2.C.
     """
+    def data_index_function(data, set_I, set_J):
+        min_dist = np.inf  # Start with infinity as the minimum distance
+        
+        # Iterate over all pairs of points, one from set I and one from set J
+        for i in set_I:
+            for j in set_J:
+                # Calculate the Euclidean distance between points i and j
+                dist = np.linalg.norm(data[i] - data[j])
+                # Update the minimum distance if this distance is smaller
+                if dist < min_dist:
+                    min_dist = dist
+    
+        return min_dist
+        return None
     # Answer type: a function defined above
     answers["3D: function"] = data_index_function
 
