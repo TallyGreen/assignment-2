@@ -3,8 +3,8 @@ import time
 import warnings
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn import cluster, datasets, mixture
-from sklearn.datasets import make_blobs
+from sklearn import cluster, mixture
+from sklearn.datasets import *
 from sklearn.neighbors import kneighbors_graph
 from sklearn.preprocessing import StandardScaler
 from sklearn.cluster import KMeans
@@ -33,6 +33,7 @@ In the first task, you will explore how k-Means perform on datasets with diverse
 
 def fit_kmeans(data, n_clusters):
     # Standardizing the data
+    data= data[0]
     scaler = StandardScaler()
     data_standardized = scaler.fit_transform(data)
         
@@ -47,12 +48,12 @@ def fit_kmeans(data, n_clusters):
 
 def compute():
     answers = {}
-    nc = datasets.make_circles(n_samples=100, factor=0.5, noise=0.05, random_state=42)
-    nm = datasets.make_moons(n_samples=100, noise=0.05, random_state=42)
-    b = datasets.make_blobs(n_samples=100, random_state=42)
-    bvv = datasets.make_blobs(n_samples=100, cluster_std=[1.0, 2.5, 0.5], random_state=42)
+    nc = make_circles(n_samples=100, factor=0.5, noise=0.05, random_state=42)
+    nm = make_moons(n_samples=100, noise=0.05, random_state=42)
+    b = make_blobs(n_samples=100, random_state=42)
+    bvv = make_blobs(n_samples=100, cluster_std=[1.0, 2.5, 0.5], random_state=42)
     #Anisotropicly distributed data
-    X, y = datasets.make_blobs(n_samples=100, random_state=42)
+    X, y = make_blobs(n_samples=100, random_state=42)
     transformation = [[0.6, -0.6], [-0.4, 0.8]]
     X_aniso = np.dot(X, transformation)
     add = (X_aniso, y)
