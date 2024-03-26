@@ -6,6 +6,7 @@ from sklearn import cluster, mixture
 from sklearn.datasets import *
 from sklearn.neighbors import kneighbors_graph
 from sklearn.preprocessing import StandardScaler
+from scipy.cluster.hierarchy import linkage as scipy_linkage, fcluster
 from itertools import cycle, islice
 import scipy.io as io
 from scipy.cluster.hierarchy import dendrogram, linkage  #
@@ -104,6 +105,69 @@ def compute():
     Create a pdf of the plots and return in your report. 
     """
 
+    datasets = {
+        "nc": nc,
+        "nm": nm,
+        "b": b,
+        "bvv": bvv,
+        "add": add
+    }
+
+    linkage_types = ['single', 'complete', 'ward', 'average']
+
+    def find_optimal_cutoff(Z):
+        distances = Z[:, 2]
+        distance_diff = np.diff(distances)
+        max_diff_idx = np.argmax(distance_diff)
+        optimal_cutoff = distances[max_diff_idx]
+        return optimal_cutoff
+
+    def fit_hier_cluster_auto_cutoff(data, method):
+        scaler = StandardScaler()
+        data_scaled = scaler.fit_transform(data[0])
+        Z = scipy_linkage(data_scaled, method=method)
+        cutoff = find_optimal_cutoff(Z)
+        predicted_labels = fcluster(Z, cutoff, criterion='distance') - 1
+        return predicted_labels
+
+    auto_cutoff_predictions = []
+    for method in linkage_types:
+        predictions = [fit_hier_cluster_auto_cutoff(dataset, method) for dataset in datasets.values()]
+        auto_cutoff_predictions.append(predictions)
+
+    def plot_all_linkage_clusters(datasets, cluster_predictions, linkage_methods, title):
+        num_linkages = len(linkage_methods)
+        num_datasets = len(datasets)
+        fig, axs = plt.subplots(num_linkages, num_datasets, figsize=(20, 16), sharex=True, sharey=True)
+        fig.suptitle(title, fontsize=20)
+
+        dataset_names = ['Noisy Circles', 'Noisy Moons', 'Varied', 'Anisotropic', 'Blobs']
+
+        for i, linkage in enumerate(linkage_methods):
+            for j, (dataset, pred_labels) in enumerate(zip(datasets.values(), cluster_predictions[i])):
+                axs[i, j].scatter(dataset[0][:, 0], dataset[0][:, 1], c=pred_labels, s=10, cmap='viridis')
+                if i == num_linkages - 1:
+                    axs[i, j].set_xlabel(dataset_names[j])
+                if j == 0:
+                    axs[i, j].set_ylabel(linkage)
+                axs[i, j].set_xticks([])
+                axs[i, j].set_yticks([])
+
+        plt.tight_layout(rect=[0, 0.03, 1, 0.95])
+        plt.show()
+
+    plot_all_linkage_clusters(datasets, auto_cutoff_predictions, linkage_types, 'Hierarchical Clustering')
+
+
+    def fit_modified(data, method):
+        scaler = StandardScaler()
+        data_scaled = scaler.fit_transform(data[0])
+        Z = scipy_linkage(data_scaled, method=method)
+    # Find the optimal cutoff distance
+        cutoff = find_optimal_cutoff(Z)
+        predicted_labels = fcluster(Z, cutoff, criterion='distance') - 1  # Adjust labels to start from 0
+        return predicted_labels
+    
     # dct is the function described above in 4.C
     dct = answers["4A: modified function"] = fit_modified
 
