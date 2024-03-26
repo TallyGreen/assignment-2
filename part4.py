@@ -60,7 +60,7 @@ def compute():
     "nm": [nm[0], nm[1]],
     "bvv": [bvv[0], bvv[1]],
     "add": [add[0], add[1]],
-    "b": [b[0], b[1]],}
+    "b": [b[0], b[1]]}
 
     # dct value:  the `fit_hierarchical_cluster` function
     dct = answers["4A: fit_hierarchical_cluster"] = fit_hierarchical_cluster
