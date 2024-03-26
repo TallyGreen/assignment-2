@@ -19,6 +19,7 @@ import pickle
 import utils as u
 
 
+
 # ----------------------------------------------------------------------
 """
 Part 1: 
@@ -72,22 +73,8 @@ def compute():
     """
    B. Write a function called fit_kmeans that takes dataset (before any processing on it), i.e., pair of (data, label) Numpy arrays, and the number of clusters as arguments, and returns the predicted labels from k-means clustering. Use the init='random' argument and make sure to standardize the data (see StandardScaler transform), prior to fitting the KMeans estimator. This is the function you will use in the following questions. 
     """
-    def fit_kmeans(dataset, n_clusters):
-        data, labels = dataset
-        # Standardizing the data
-        scaler = StandardScaler()
-        data_standardized = scaler.fit_transform(data)
-        
-        # Fitting KMeans
-        kmeans = KMeans(n_clusters=n_clusters, init='random',random_state=42)
-        kmeans.fit(data_standardized)
-        
-        # Predicting labels
-        predicted_labels = kmeans.predict(data_standardized)
-        
-        return predicted_labels
     # dct value:  the `fit_kmeans` function
-    dct = answers["1B: fit_kmeans"] = fit_kmeans
+    dct = answers["1B: fit_kmeans"] = fit_kmeans()
 
 
 
@@ -96,11 +83,11 @@ def compute():
     
     Create a pdf of the plots and return in your report. 
     """
-    datasets = [nc, nm, b, bvv, add]
+    data_sets = [nc, nm, b, bvv, add]
     name=["nc", "nm", "b", "bvv", "add"]
     ks = [2, 3, 5, 10]
     fig, axes = plt.subplots(4, 5, figsize=(15, 20))
-    for i, X  in enumerate(datasets):
+    for i, X  in enumerate(data_sets):
             for j, k in enumerate(ks):
                 ax = axes[j, i]
                 ax.scatter(X[0][:,0], X[0][:,1], c=fit_kmeans(X,k), cmap='viridis')
